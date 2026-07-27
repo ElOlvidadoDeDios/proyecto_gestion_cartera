@@ -1,39 +1,18 @@
 GO
 CREATE OR ALTER VIEW gc_colocacion WITH ENCRYPTION AS
-
---- ###################
---- NOTAS
---- ###################
-
 /*
 - Sobre creditos extornados (improcedentes)
 - Sobre creditos castigados
 */
-
---- ###################
---- PREAMBULO
---- ###################
-
---- *******************
---- CTEs
 WITH
---- *******************
-
---- ===================
 CTE_AUX_COLOCACION AS (
---- ===================
-
-------
 SELECT
-------
 	T_PTM.CUENTA,
 	T_PTM.OTORGA,
 	T_PTM.PAGARE,
 	T_USU.ID_USER,
 	T_PTM.MONTO_PRESTAMO
-------
 FROM
-------
     PRESTAMO T_PTM
 	INNER JOIN PREEC T_PRE
 		ON  T_PRE.CUENTA = T_PTM.CUENTA
@@ -48,20 +27,10 @@ FROM
 	INNER JOIN SEGURIDAD.dbo.GRUPOUSER T_GRU
 		ON  T_GRU.ID_GRUPO = T_USU.ID_GRUPO
 		AND T_GRU.NOM_GRUPO = 'CREDITOS'
-------
 WHERE
-------
 	T_PTM.TIPO_PROD <> '52'
 	AND	FORMAT(T_PTM.OTORGA, 'yyyyMM')  = '202607'
-
---- ===================
 )
---- ===================
-
---- ###################
---- MAIN
---- ###################
-
 SELECT
 	CAST(T.OTORGA AS DATE) AS Fecha,
 	T.ID_USER              AS IdSAsesor,

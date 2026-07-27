@@ -2,48 +2,14 @@ CREATE OR ALTER PROCEDURE gc.sp_fct_stock_flow
     @Periodo CHAR(6)
 AS
 BEGIN
---- ####################################################
---- ####################################################
---- ####################################################
-
---- ######################
---- NOTAS
---- ######################
-
---- ######################
---- PREAMBULO
---- ######################
-
---- **********************
---- CTEs
 WITH
---- **********************
-
---- ======================
 CTE_DIM_ASESOR AS (
---- ======================
-
 SELECT * FROM gc.tvf_dim_asesor(@Periodo)
-
---- ======================
-)
-,
---- ======================
-
---- ======================
+),
 CTE_FCT_STOCK AS (
---- ======================
-
 SELECT * FROM gc.tvf_fct_stock(@Periodo)
-
---- ======================
-)
-,
---- ======================
-
---- ======================
+),
 CTE_FCT_FLOW AS (
---- ======================
 
 SELECT
 	T.Periodo,
@@ -58,19 +24,8 @@ GROUP BY
 	T.Periodo,
 	T.IdSAgencia,
 	T.IdSAsesor
-
---- ======================
 )
---- ======================
-
-
---- ######################
---- MAIN
---- ######################
-
-------
 SELECT
-------
     T_STO.Periodo,
 	T_ASE.IdSAgencia,
     TRIM(T_ASE.IdSAsesor) AS IdSAsesor,
@@ -87,9 +42,7 @@ SELECT
 	T_FLO.ColocacionNumReal,
 	T_FLO.ColocacionMontoReal,
 	T_FLO.RepagoReal
-------
 FROM
-------
 	CTE_DIM_ASESOR T_ASE
 	INNER JOIN CTE_FCT_STOCK T_STO
 		ON  T_STO.Periodo = T_ASE.Periodo
@@ -97,7 +50,4 @@ FROM
 	INNER JOIN CTE_FCT_FLOW T_FLO
 		ON  T_FLO.Periodo = T_STO.Periodo
 		AND T_FLO.IdSAsesor = T_STO.IdSAsesor
---- ####################################################
---- ####################################################
---- ####################################################
 END;
